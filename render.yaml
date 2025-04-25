@@ -2,21 +2,27 @@ services:
   - type: web
     name: damask-shop
     env: node
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm run start
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: SESSION_SECRET
         generateValue: true
-      - key: DATABASE_URL
-        fromDatabase:
-          name: damask-db
-          property: connectionString
+      # Database URL будет автоматически подключен, если вы создадите базу данных в Render
+      # Если вы используете внешнюю базу данных, добавьте переменную DATABASE_URL вручную
+      # - key: DATABASE_URL
+      #   value: postgres://username:password@host:port/database
 
-databases:
-  - name: damask-db
-    databaseName: damaskdb
-    user: damask_admin
+# Инструкции по добавлению базы данных:
+# 1. В интерфейсе Render перейдите в раздел "PostgreSQL"
+# 2. Создайте новую базу данных
+# 3. В настройках сервиса в разделе "Environment" найдите "Add Environment Variable"
+# 4. Добавьте переменную DATABASE_URL с URL вашей базы данных
+#
+# Пример значения:
+# postgres://username:password@host:port/database
+#
+# Вы также можете добавить базу данных через интерфейс Render,
+# и она будет автоматически связана с вашим приложением

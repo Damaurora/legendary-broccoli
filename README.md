@@ -88,12 +88,50 @@
 └── package.json          # Зависимости проекта
 ```
 
-## Поддержка хостинга
+## Деплой на Render
 
-Для деплоя рекомендуется использовать:
-- **Frontend**: Vercel, Netlify
-- **Backend**: Railway, Render, Heroku
-- **База данных**: Neon.tech, Railway, Supabase
+Для деплоя на Render.com следуйте этим шагам:
+
+1. Создайте аккаунт на [Render.com](https://render.com)
+
+2. Нажмите кнопку "New +" и выберите "Web Service"
+
+3. Подключите ваш GitHub репозиторий или используйте "Deploy from GitHub"
+
+4. Настройте сервис:
+   - **Name**: damask-shop (или выберите своё имя)
+   - **Environment**: Node
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm run start`
+   - **Plan**: Free
+
+5. Нажмите "Create Web Service"
+
+6. После создания сервиса, перейдите в раздел "PostgreSQL" в боковом меню Render
+
+7. Создайте новую PostgreSQL базу данных:
+   - **Name**: damask-db (или выберите своё имя)
+   - **Plan**: Free (или подходящий план)
+
+8. После создания базы данных, скопируйте "Internal Database URL" из настроек базы
+
+9. Вернитесь к вашему веб-сервису и перейдите в раздел "Environment"
+
+10. Добавьте следующие переменные окружения:
+    - `DATABASE_URL`: [скопированный URL базы данных]
+    - `SESSION_SECRET`: [любая случайная строка]
+    - `NODE_ENV`: production
+
+11. Нажмите "Save Changes" и дождитесь перезапуска сервиса
+
+Ваше приложение будет доступно по URL, который предоставит Render.
+
+### Другие платформы
+
+Также для деплоя подходят:
+- **Railway**: Простой деплой с автоматической настройкой базы данных
+- **Fly.io**: Глобальное распределение и бесплатный уровень
+- **Vercel + Supabase**: Vercel для фронтенда + Supabase для базы данных
 
 ## Лицензия
 
