@@ -4,67 +4,115 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-:root {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 0 100% 50%;  /* Damask red */
-  --primary-foreground: 211 100% 99%;
-  --secondary: 60 4.8% 95.9%;
-  --secondary-foreground: 24 9.8% 10%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 20 14.3% 4.1%;
-  --radius: 0.5rem;
-}
-
-.dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 0 100% 50%;  /* Damask red */
-  --primary-foreground: 211 100% 99%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
-  --radius: 0.5rem;
-}
-
 @layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 96%;
+    
+    --card: 240 5% 12%;
+    --card-foreground: 0 0% 96%;
+    
+    --popover: 240 10% 16%;
+    --popover-foreground: 0 0% 96%;
+    
+    --primary: 24 100% 50%; /* Orange */
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 5% 18%;
+    --secondary-foreground: 0 0% 96%;
+    
+    --muted: 240 5% 16%;
+    --muted-foreground: 0 0% 70%;
+    
+    --accent: 24 100% 40%; /* Darker Orange */
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 5% 20%;
+    --input: 240 5% 15%;
+    --ring: 24 100% 50%;
+    
+    --sidebar-background: 240 5% 12%;
+    --sidebar-foreground: 0 0% 96%;
+    --sidebar-primary: 24 100% 50%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 24 100% 40%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 5% 20%;
+    --sidebar-ring: 24 100% 50%;
+    
+    --radius: 0.5rem;
+    
+    --chart-1: 24 100% 50%;
+    --chart-2: 24 90% 55%;
+    --chart-3: 24 80% 60%;
+    --chart-4: 24 70% 65%;
+    --chart-5: 24 60% 70%;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
   }
-}
-
-.transition-transform {
-  transition: transform 0.3s ease;
-}
-
-.hover\:scale-105:hover {
-  transform: scale(1.05);
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-card;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary rounded-sm;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent;
+  }
+  
+  /* Fire logo drop shadow */
+  .fire-logo {
+    filter: drop-shadow(0 0 10px rgba(255, 85, 0, 0.5));
+  }
+  
+  /* Logo text with neon outline */
+  .shop-logo-text {
+    position: relative;
+    text-shadow: 
+      -1px -1px 0 rgba(50, 50, 50, 0.8),
+      1px -1px 0 rgba(50, 50, 50, 0.8),
+      -1px 1px 0 rgba(50, 50, 50, 0.8),
+      1px 1px 0 rgba(50, 50, 50, 0.8),
+      0 0 4px rgba(100, 100, 100, 0.5),
+      0 0 5px rgba(50, 50, 50, 0.3);
+  }
+  
+  .shop-logo-text .text-primary {
+    text-shadow: 
+      -1px -1px 0 rgba(50, 50, 50, 0.8),
+      1px -1px 0 rgba(50, 50, 50, 0.8),
+      -1px 1px 0 rgba(50, 50, 50, 0.8),
+      1px 1px 0 rgba(50, 50, 50, 0.8),
+      0 0 8px rgba(255, 119, 0, 0.8),
+      0 0 12px rgba(255, 85, 0, 0.5);
+  }
+  
+  /* Product card hover effect */
+  .product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 85, 0, 0.2);
+  }
+  
+  /* Category hover effect */
+  .category-item:hover {
+    @apply bg-primary/10 border-l-2 border-primary;
+  }
 }
