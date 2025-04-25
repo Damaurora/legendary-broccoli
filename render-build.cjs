@@ -28,11 +28,11 @@ function runCommand(command) {
 
 // Установка всех зависимостей включая dev
 console.log('📦 Установка зависимостей...');
-runCommand('npm install');
+runCommand('npm install --include=dev');
 
-// Явно устанавливаем vite и плагины
-console.log('📦 Установка dev-зависимостей для сборки...');
-runCommand('npm install --no-save @vitejs/plugin-react @replit/vite-plugin-cartographer @replit/vite-plugin-runtime-error-modal vite esbuild typescript');
+// На всякий случай явно устанавливаем vite и плагины
+console.log('📦 Дополнительная установка критических dev-зависимостей для сборки...');
+runCommand('npm install --no-save @vitejs/plugin-react @replit/vite-plugin-cartographer @replit/vite-plugin-runtime-error-modal vite esbuild typescript @tailwindcss/vite tailwindcss-animate');
 
 // Сборка клиента
 console.log('🏗️ Сборка frontend (vite)...');

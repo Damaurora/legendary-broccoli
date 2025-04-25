@@ -101,11 +101,14 @@
 4. Настройте сервис:
    - **Name**: damask-shop (или выберите своё имя)
    - **Environment**: Node
-   - **Build Command**: `node render-build.cjs && npm run db:push`
+   - **Build Command**: `npm run db:push && node render-build.cjs`
    - **Start Command**: `npm run start`
    - **Plan**: Free
 
-   > **Важно**: Используем специальный скрипт `render-build.cjs`, который корректно устанавливает все зависимости включая dev-зависимости и собирает проект для Render. Файл имеет расширение .cjs для совместимости с ES модулями.
+   > **Важно**: 
+   > 1. Используем специальный скрипт `render-build.cjs` для преодоления проблем с зависимостями
+   > 2. В разделе "Advanced Options" включите опцию "Include Development Dependencies"
+   > 3. Файл имеет расширение .cjs для совместимости с ES модулями
 
 5. Нажмите "Create Web Service"
 
