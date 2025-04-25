@@ -70,9 +70,6 @@ export default function Header() {
             <Link href="/#contacts" className="text-muted-foreground hover:text-primary transition-colors font-medium">
               Контакты
             </Link>
-            <Link href="/admin" className="text-muted-foreground hover:text-primary transition-colors font-medium">
-              Админ
-            </Link>
           </nav>
 
           {/* Mobile menu button */}
@@ -127,10 +124,6 @@ export default function Header() {
                     <Link href="/#contacts" onClick={() => setIsMenuOpen(false)} 
                       className="block py-2 text-muted-foreground hover:text-primary transition-colors font-medium">
                       Контакты
-                    </Link>
-                    <Link href="/admin" onClick={() => setIsMenuOpen(false)} 
-                      className="block py-2 text-muted-foreground hover:text-primary transition-colors font-medium">
-                      Админ
                     </Link>
                   </div>
                 </nav>

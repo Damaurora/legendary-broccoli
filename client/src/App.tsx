@@ -30,8 +30,8 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
     );
   }
   
-  if (!user || !user.isAdmin) {
-    // Если пользователь не админ, перенаправляем на страницу аутентификации
+  if (!user) {
+    // Если пользователь не авторизован, перенаправляем на страницу аутентификации
     navigate("/auth");
     return null;
   }
