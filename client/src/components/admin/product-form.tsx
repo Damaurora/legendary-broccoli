@@ -497,7 +497,7 @@ export default function ProductForm({ product, onClose, onSave }: ProductFormPro
                       <FormItem>
                         <FormLabel>Бренд</FormLabel>
                         <Select 
-                          value={field.value !== undefined ? String(field.value) : undefined}
+                          value={field.value !== undefined ? String(field.value) : "0"}
                           onValueChange={(value) => field.onChange(Number(value))}
                         >
                           <FormControl>
@@ -506,7 +506,7 @@ export default function ProductForm({ product, onClose, onSave }: ProductFormPro
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="">Не указан</SelectItem>
+                            <SelectItem value="0">Не указан</SelectItem>
                             {brands.map((brand: any) => (
                               <SelectItem 
                                 key={brand.id} 

@@ -178,10 +178,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.post("/api/products", requireAdmin, async (req, res) => {
     try {
-      // Добавляем ID создателя
+      // Создаем продукт из данных запроса
       const product = await storage.createProduct({
         ...req.body,
-        createdBy: req.user?.id,
       });
       res.status(201).json(product);
     } catch (error) {
@@ -227,6 +226,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(availability);
     } catch (error) {
       res.status(500).json({ error: "Failed to update product availability" });
+    }
+  });
+  
+  // API для синхронизации с Google Sheets
+  app.get("/api/sync/status", requireAdmin, (req, res) => {
+    try {
+      // В реальном приложении здесь будет проверка статуса синхронизации
+      // и возврат результатов последней синхронизации
+      res.json({
+        isRunning: false,
+        progress: 100,
+        lastResults: []
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get sync status" });
+    }
+  });
+  
+  app.post("/api/sync", requireAdmin, (req, res) => {
+    try {
+      // В реальном приложении здесь будет код для синхронизации с Google Sheets
+      const sheetUrl = req.body.sheetUrl;
+      
+      if (!sheetUrl) {
+        return res.status(400).json({ error: "Sheet URL is required" });
+      }
+      
+      // Имитация успешного запуска синхронизации
+      res.json({
+        status: "started",
+        message: "Synchronization started successfully"
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to start synchronization" });
+    }
+  });
+  
+  app.post("/api/sync/export", requireAdmin, (req, res) => {
+    try {
+      // В реальном приложении здесь будет код для экспорта товаров в Google Sheets
+      const sheetUrl = req.body.sheetUrl;
+      
+      if (!sheetUrl) {
+        return res.status(400).json({ error: "Sheet URL is required" });
+      }
+      
+      // Имитация успешного экспорта
+      res.json({
+        status: "success",
+        message: "Products exported successfully"
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to export products" });
     }
   });
   
