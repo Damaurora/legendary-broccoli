@@ -1,4 +1,4 @@
-import { pgTable, serial, text, boolean, integer, timestamp, foreignKey, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, boolean, integer, timestamp, foreignKey, jsonb, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -64,6 +64,51 @@ export const insertBrandSchema = createInsertSchema(brands).pick({
   description: true,
   logo: true,
   isActive: true,
+});
+
+// Теги для товаров
+export const tags = pgTable("tags", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  color: text("color").default("#e63900"),
+  description: text("description"),
+  isSystem: boolean("is_system").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  productTags: many(productTags),
+}));
+
+export const insertTagSchema = createInsertSchema(tags).pick({
+  name: true,
+  color: true,
+  description: true,
+  isSystem: true,
+});
+
+// Связь тегов с продуктами
+export const productTags = pgTable("product_tags", {
+  id: serial("id").primaryKey(),
+  productId: integer("product_id").notNull().references(() => products.id, { onDelete: 'cascade' }),
+  tagId: integer("tag_id").notNull().references(() => tags.id, { onDelete: 'cascade' }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const productTagsRelations = relations(productTags, ({ one }) => ({
+  product: one(products, {
+    fields: [productTags.productId],
+    references: [products.id],
+  }),
+  tag: one(tags, {
+    fields: [productTags.tagId],
+    references: [tags.id],
+  }),
+}));
+
+export const insertProductTagSchema = createInsertSchema(productTags).pick({
+  productId: true,
+  tagId: true,
 });
 
 // Магазины/локации
