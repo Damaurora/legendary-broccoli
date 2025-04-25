@@ -1,62 +1,79 @@
-const collections = [
-  {
-    image: "https://images.unsplash.com/photo-1548484352-ea579e5233a8?w=600&h=400&fit=crop",
-    title: "Classical Collection",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1615874959474-d609969a20ed?w=600&h=400&fit=crop",
-    title: "Modern Collection",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1599619351208-3e6c839d6828?w=600&h=400&fit=crop",
-    title: "Botanical Collection",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1580644228275-9adf2aacf31e?w=600&h=400&fit=crop",
-    title: "Heritage Collection",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1587587393350-fea088e561ce?w=600&h=400&fit=crop",
-    title: "Luxury Collection",
-  },
-  {
-    image: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=600&h=400&fit=crop",
-    title: "Seasonal Collection",
-  }
-];
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
-const CollectionsSection = () => {
+interface CollectionsSectionProps {
+  products: any[];
+}
+
+export default function CollectionsSection({ products }: CollectionsSectionProps) {
+  const [, navigate] = useLocation();
+  
   return (
-    <section id="collections" className="py-16 md:py-24">
+    <div className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Collections</h2>
-          <div className="w-16 h-1 bg-[#FF0000] mx-auto mb-8"></div>
-          <p className="text-lg text-gray-700">Discover our signature textile collections, where heritage meets contemporary style.</p>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Популярные товары
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Ознакомьтесь с нашей коллекцией самых популярных товаров, выбранных на основе предпочтений наших клиентов.
+          </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {collections.map((collection, index) => (
-            <div key={index} className="group relative overflow-hidden">
-              <img 
-                src={collection.image} 
-                alt={collection.title} 
-                className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110" 
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="text-center p-4">
-                  <h3 className="text-white text-2xl font-bold mb-2">{collection.title}</h3>
-                  <a href="#" className="inline-block bg-white text-black px-6 py-2 mt-2 hover:bg-[#FF0000] hover:text-white transition-colors duration-300">
-                    View Details
-                  </a>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {products.slice(0, 8).map((product, index) => (
+            <div 
+              key={product.id || index}
+              className="bg-card rounded-lg overflow-hidden border border-border hover:border-primary/50 transition-all cursor-pointer group"
+              onClick={() => navigate(`/product/${product.slug}`)}
+            >
+              <div className="aspect-square overflow-hidden">
+                <img 
+                  src={product.image || 'https://placehold.co/300x300?text=No+Image'} 
+                  alt={product.name} 
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-medium text-lg text-white mb-1 line-clamp-1">{product.name}</h3>
+                <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+                  {product.description || "Описание отсутствует"}
+                </p>
+                <div className="flex justify-between items-center">
+                  <div className="flex space-x-2">
+                    {product.featured && (
+                      <span className="inline-block px-2 py-1 text-xs bg-primary/20 text-primary rounded">
+                        Популярный
+                      </span>
+                    )}
+                    {product.isNew && (
+                      <span className="inline-block px-2 py-1 text-xs bg-blue-500/20 text-blue-500 rounded">
+                        Новинка
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-primary font-medium group-hover:underline">
+                    Подробнее
+                  </span>
                 </div>
               </div>
             </div>
           ))}
         </div>
+        
+        <div className="flex justify-center mt-10">
+          <Button 
+            onClick={() => navigate("/catalog")}
+            variant="outline"
+            className="gap-2"
+          >
+            Смотреть все товары
+            <ArrowRight size={16} />
+          </Button>
+        </div>
       </div>
-    </section>
+    </div>
   );
-};
-
-export default CollectionsSection;
+}
