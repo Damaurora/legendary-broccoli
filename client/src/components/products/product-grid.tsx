@@ -1,6 +1,15 @@
 import { Link } from "wouter";
+import { 
+  Card, 
+  CardContent, 
+  CardFooter, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ShoppingCart, ChevronLeft, ChevronRight, Sparkles, Flame } from "lucide-react";
 
 interface PaginationProps {
   totalPages: number;
@@ -21,115 +30,120 @@ interface ProductGridProps {
   onPageChange: (page: number) => void;
 }
 
-// Pagination component
 function Pagination({ totalPages, currentPage, onPageChange }: PaginationProps) {
-  // Generate page numbers array
-  const getPageNumbers = () => {
-    const pageNumbers = [];
-    
-    // Always show first page
-    pageNumbers.push(1);
-    
-    // If current page is more than 3, add ellipsis
-    if (currentPage > 3) {
-      pageNumbers.push('...');
+  // Calculate range of pages to show
+  const range = 2; // Show 2 pages before and after current page
+  let startPage = Math.max(1, currentPage - range);
+  let endPage = Math.min(totalPages, currentPage + range);
+  
+  // Ensure we always show at least 5 pages if available
+  if (endPage - startPage < 4 && totalPages > 4) {
+    if (startPage === 1) {
+      endPage = Math.min(5, totalPages);
+    } else if (endPage === totalPages) {
+      startPage = Math.max(1, totalPages - 4);
     }
-    
-    // Show pages around current page
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-      pageNumbers.push(i);
-    }
-    
-    // If there are more pages after current + 1, add ellipsis
-    if (currentPage + 1 < totalPages - 1) {
-      pageNumbers.push('...');
-    }
-    
-    // Always show last page if there is more than one page
-    if (totalPages > 1) {
-      pageNumbers.push(totalPages);
-    }
-    
-    return pageNumbers;
-  };
-
-  if (totalPages <= 1) return null;
-
+  }
+  
+  const pages = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  
   return (
-    <div className="flex justify-center items-center space-x-1 mt-8">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="h-8 w-8"
-      >
-        <ArrowLeft size={16} />
-      </Button>
-      
-      {getPageNumbers().map((page, index) => (
-        page === '...' ? (
-          <span key={`ellipsis-${index}`} className="px-3 text-muted-foreground">
-            ...
-          </span>
-        ) : (
+    <div className="flex justify-center mt-8">
+      <div className="flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          className="h-8 w-8 p-0"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        
+        {startPage > 1 && (
+          <>
+            <Button
+              variant={currentPage === 1 ? "default" : "outline"}
+              size="sm"
+              onClick={() => onPageChange(1)}
+              className="h-8 w-8 p-0"
+            >
+              1
+            </Button>
+            {startPage > 2 && <span className="text-muted-foreground">...</span>}
+          </>
+        )}
+        
+        {pages.map(page => (
           <Button
-            key={`page-${page}`}
+            key={page}
             variant={currentPage === page ? "default" : "outline"}
             size="sm"
-            onClick={() => onPageChange(Number(page))}
-            className="h-8 w-8"
+            onClick={() => onPageChange(page)}
+            className="h-8 w-8 p-0"
           >
             {page}
           </Button>
-        )
-      ))}
-      
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="h-8 w-8"
-      >
-        <ArrowRight size={16} />
-      </Button>
-    </div>
-  );
-}
-
-// Product card placeholder for loading state
-function ProductCardSkeleton() {
-  return (
-    <div className="animate-pulse bg-card rounded-lg overflow-hidden product-card">
-      <div className="w-full h-48 bg-muted"></div>
-      <div className="p-4">
-        <div className="h-6 bg-muted rounded w-3/4 mb-2"></div>
-        <div className="h-4 bg-muted rounded w-full mb-2"></div>
-        <div className="h-4 bg-muted rounded w-2/3 mb-4"></div>
-        <div className="flex justify-between items-center">
-          <div className="h-4 bg-muted rounded w-1/4"></div>
-          <div className="h-4 bg-muted rounded w-1/4"></div>
-        </div>
+        ))}
+        
+        {endPage < totalPages && (
+          <>
+            {endPage < totalPages - 1 && <span className="text-muted-foreground">...</span>}
+            <Button
+              variant={currentPage === totalPages ? "default" : "outline"}
+              size="sm"
+              onClick={() => onPageChange(totalPages)}
+              className="h-8 w-8 p-0"
+            >
+              {totalPages}
+            </Button>
+          </>
+        )}
+        
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+          className="h-8 w-8 p-0"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   );
 }
 
+function ProductCardSkeleton() {
+  return (
+    <Card className="border-border bg-card h-full">
+      <div className="aspect-square w-full relative overflow-hidden rounded-t-lg">
+        <Skeleton className="h-full w-full" />
+      </div>
+      <CardHeader className="p-4 pb-0">
+        <Skeleton className="h-5 w-3/4 mb-2" />
+        <Skeleton className="h-4 w-1/2" />
+      </CardHeader>
+      <CardContent className="p-4 pt-2">
+        <Skeleton className="h-6 w-24 mb-3" />
+        <Skeleton className="h-10 w-full mt-1" />
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function ProductGrid({ 
   products, 
-  isLoading,
-  pagination,
+  isLoading, 
+  pagination, 
   currentPage,
   onPageChange
 }: ProductGridProps) {
-  
-  // Show loading state
   if (isLoading) {
     return (
       <div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array(6).fill(0).map((_, index) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {Array.from({ length: 9 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))}
         </div>
@@ -137,68 +151,70 @@ export default function ProductGrid({
     );
   }
   
-  // Show empty state if no products
   if (products.length === 0) {
     return (
-      <div className="bg-card rounded-lg p-8 text-center">
-        <h3 className="text-xl font-medium text-white mb-2">Нет товаров</h3>
-        <p className="text-muted-foreground mb-6">
-          По данному запросу не найдено товаров. Попробуйте изменить параметры поиска.
-        </p>
-        <Button variant="outline" onClick={() => window.history.back()}>
-          Вернуться назад
-        </Button>
+      <div className="text-center py-12">
+        <h3 className="text-xl font-semibold text-foreground mb-2">Товары не найдены</h3>
+        <p className="text-muted-foreground">Попробуйте изменить параметры поиска или фильтры</p>
       </div>
     );
   }
   
   return (
     <div>
-      {/* Results count */}
-      <div className="mb-6 text-muted-foreground">
-        {pagination && (
-          <p>
-            Найдено {pagination.totalCount} товаров. 
-            Показано {(pagination.page - 1) * pagination.pageSize + 1}-
-            {Math.min(pagination.page * pagination.pageSize, pagination.totalCount)} из {pagination.totalCount}.
-          </p>
-        )}
-      </div>
-    
-      {/* Product grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div key={product.id} className="bg-card rounded-lg overflow-hidden product-card">
+          <Card key={product.id} className="border-border bg-card h-full overflow-hidden hover:border-primary/50 transition-all">
             <Link href={`/product/${product.slug}`}>
-              <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="font-medium text-lg mb-1 text-white">{product.name}</h3>
-                <p className="text-muted-foreground text-sm line-clamp-2 mb-2">{product.description}</p>
-                <div className="flex justify-between items-center">
-                  <div className="text-sm space-x-2">
-                    {product.featured && (
-                      <span className="px-2 py-0.5 bg-primary/20 text-primary rounded text-xs">Популярный</span>
-                    )}
-                    {product.isNew && (
-                      <span className="px-2 py-0.5 bg-blue-500/20 text-blue-500 rounded text-xs">Новинка</span>
-                    )}
-                  </div>
-                  <button className="text-primary hover:text-primary/80 transition-colors">
-                    Подробнее
-                  </button>
-                </div>
+              <div className="aspect-square w-full relative overflow-hidden cursor-pointer">
+                <img 
+                  src={product.image || 'https://placehold.co/300x300?text=Нет+фото'} 
+                  alt={product.name} 
+                  className="h-full w-full object-cover transition-transform hover:scale-105"
+                />
+                {product.isNew && (
+                  <Badge className="absolute top-2 right-2 bg-blue-500">
+                    <Sparkles className="h-3 w-3 mr-1" /> Новинка
+                  </Badge>
+                )}
+                {product.featured && (
+                  <Badge variant="destructive" className="absolute top-2 left-2">
+                    <Flame className="h-3 w-3 mr-1" /> Хит
+                  </Badge>
+                )}
               </div>
             </Link>
-          </div>
+            <CardHeader className="p-4 pb-0">
+              <Link href={`/product/${product.slug}`}>
+                <CardTitle className="text-md font-medium text-foreground hover:text-primary transition-colors cursor-pointer">
+                  {product.name}
+                </CardTitle>
+              </Link>
+              <div className="text-xs text-muted-foreground mt-1">
+                {product.category?.name}{product.brand && ` • ${product.brand.name}`}
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 pt-2">
+              <div className="text-lg font-bold text-foreground mt-1">
+                {product.price.toLocaleString()} ₽
+              </div>
+            </CardContent>
+            <CardFooter className="p-4 pt-0">
+              <Link href={`/product/${product.slug}`} className="w-full">
+                <Button variant="default" className="w-full">
+                  <ShoppingCart className="mr-2 h-4 w-4" /> Подробнее
+                </Button>
+              </Link>
+            </CardFooter>
+          </Card>
         ))}
       </div>
       
-      {/* Pagination */}
-      {pagination && (
+      {pagination && pagination.totalPages > 1 && (
         <Pagination 
-          totalPages={pagination.totalPages}
-          currentPage={currentPage}
-          onPageChange={onPageChange}
+          totalPages={pagination.totalPages} 
+          currentPage={currentPage} 
+          onPageChange={onPageChange} 
         />
       )}
     </div>

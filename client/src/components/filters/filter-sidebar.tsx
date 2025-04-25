@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { 
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Card, 
+  CardContent, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Filter } from "lucide-react";
 
 interface FilterSidebarProps {
   selectedFilters: {
@@ -18,122 +20,116 @@ interface FilterSidebarProps {
 }
 
 export default function FilterSidebar({ 
-  selectedFilters,
-  onFilterChange
+  selectedFilters, 
+  onFilterChange 
 }: FilterSidebarProps) {
   // Fetch brands
   const { data: brands } = useQuery<any[]>({
-    queryKey: ["/api/brands"],
+    queryKey: ['/api/brands'],
   });
   
-  // Fetch store locations
+  // Fetch locations
   const { data: locations } = useQuery<any[]>({
-    queryKey: ["/api/locations"],
+    queryKey: ['/api/locations'],
   });
-  
-  // Handle brand selection
-  const handleBrandToggle = (brandId: string) => {
-    const updatedBrands = selectedFilters.brands.includes(brandId)
-      ? selectedFilters.brands.filter(id => id !== brandId)
-      : [...selectedFilters.brands, brandId];
+
+  // Дедуплицируем локации, если есть дубликаты
+  const uniqueLocations = useMemo(() => {
+    if (!locations) return [];
     
-    onFilterChange('brands', updatedBrands);
-  };
-  
-  // Handle location selection
-  const handleLocationToggle = (locationId: string) => {
-    const updatedLocations = selectedFilters.locations.includes(locationId)
-      ? selectedFilters.locations.filter(id => id !== locationId)
-      : [...selectedFilters.locations, locationId];
+    // Создаем Map для быстрого доступа по id
+    const locationsMap = new Map();
     
-    onFilterChange('locations', updatedLocations);
+    // Добавляем только уникальные локации по id
+    locations.forEach(location => {
+      if (!locationsMap.has(location.id)) {
+        locationsMap.set(location.id, location);
+      }
+    });
+    
+    // Преобразуем Map в массив
+    return Array.from(locationsMap.values());
+  }, [locations]);
+
+  // Handle brand filter change
+  const handleBrandChange = (brand: string, checked: boolean) => {
+    if (checked) {
+      onFilterChange('brands', [...selectedFilters.brands, brand]);
+    } else {
+      onFilterChange('brands', selectedFilters.brands.filter(b => b !== brand));
+    }
   };
-  
-  // Clear all filters
-  const handleClearFilters = () => {
-    onFilterChange('brands', []);
-    onFilterChange('locations', []);
+
+  // Handle location filter change
+  const handleLocationChange = (location: string, checked: boolean) => {
+    if (checked) {
+      onFilterChange('locations', [...selectedFilters.locations, location]);
+    } else {
+      onFilterChange('locations', selectedFilters.locations.filter(l => l !== location));
+    }
   };
-  
-  // Check if any filters are applied
-  const hasFilters = selectedFilters.brands.length > 0 || selectedFilters.locations.length > 0;
-  
+
   return (
-    <div className="bg-card rounded-lg border border-border p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-white">Фильтры</h3>
-        {hasFilters && (
-          <Button 
-            variant="link" 
-            className="text-primary p-0 h-auto"
-            onClick={handleClearFilters}
-          >
-            Сбросить
-          </Button>
-        )}
-      </div>
-      
-      <Accordion type="multiple" defaultValue={["brands", "locations"]} className="space-y-4">
-        {/* Brands filter */}
-        <AccordionItem value="brands" className="border-b-0">
-          <AccordionTrigger className="py-2 hover:no-underline">
-            <span className="text-foreground">Бренды</span>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2 pt-1">
-              {brands?.map(brand => (
-                <div key={brand.id} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`brand-${brand.id}`}
-                    checked={selectedFilters.brands.includes(brand.id)}
-                    onCheckedChange={() => handleBrandToggle(brand.id)}
-                  />
-                  <label 
-                    htmlFor={`brand-${brand.id}`}
-                    className="text-sm text-muted-foreground cursor-pointer"
-                  >
-                    {brand.name}
-                  </label>
-                </div>
-              ))}
-              
-              {(!brands || brands.length === 0) && (
-                <p className="text-sm text-muted-foreground">Нет доступных брендов</p>
-              )}
+    <div className="space-y-6">
+      <Card className="border-border bg-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center text-lg font-semibold text-foreground">
+            <Filter className="mr-2 h-5 w-5" />
+            Фильтры
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="space-y-6">
+            {/* Бренды */}
+            <div>
+              <h3 className="mb-3 text-sm font-medium text-foreground">Бренды</h3>
+              <Separator className="mb-3" />
+              <div className="space-y-2">
+                {brands?.map((brand) => (
+                  <div key={brand.id} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`brand-${brand.id}`} 
+                      checked={selectedFilters.brands.includes(brand.id.toString())}
+                      onCheckedChange={(checked) => handleBrandChange(brand.id.toString(), checked === true)}
+                    />
+                    <Label htmlFor={`brand-${brand.id}`} className="text-sm font-normal cursor-pointer">
+                      {brand.name}
+                    </Label>
+                  </div>
+                ))}
+                
+                {!brands?.length && (
+                  <div className="text-muted-foreground text-sm py-1">Загрузка брендов...</div>
+                )}
+              </div>
             </div>
-          </AccordionContent>
-        </AccordionItem>
-        
-        {/* Locations filter */}
-        <AccordionItem value="locations" className="border-b-0">
-          <AccordionTrigger className="py-2 hover:no-underline">
-            <span className="text-foreground">Магазины</span>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-2 pt-1">
-              {locations?.map(location => (
-                <div key={location.id} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={`location-${location.id}`}
-                    checked={selectedFilters.locations.includes(location.id)}
-                    onCheckedChange={() => handleLocationToggle(location.id)}
-                  />
-                  <label 
-                    htmlFor={`location-${location.id}`}
-                    className="text-sm text-muted-foreground cursor-pointer"
-                  >
-                    {location.name}
-                  </label>
-                </div>
-              ))}
-              
-              {(!locations || locations.length === 0) && (
-                <p className="text-sm text-muted-foreground">Нет доступных магазинов</p>
-              )}
+            
+            {/* Магазины */}
+            <div>
+              <h3 className="mb-3 text-sm font-medium text-foreground">Наличие в магазинах</h3>
+              <Separator className="mb-3" />
+              <div className="space-y-2">
+                {uniqueLocations.map((location) => (
+                  <div key={location.id} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`location-${location.id}`} 
+                      checked={selectedFilters.locations.includes(location.id.toString())}
+                      onCheckedChange={(checked) => handleLocationChange(location.id.toString(), checked === true)}
+                    />
+                    <Label htmlFor={`location-${location.id}`} className="text-sm font-normal cursor-pointer">
+                      {location.name}
+                    </Label>
+                  </div>
+                ))}
+                
+                {!uniqueLocations.length && (
+                  <div className="text-muted-foreground text-sm py-1">Загрузка магазинов...</div>
+                )}
+              </div>
             </div>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
