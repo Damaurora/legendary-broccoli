@@ -1,1 +1,1 @@
-web: npm run db:push && node render-build.cjs && npm run start
+web: chmod +x render-build.sh && ./render-build.sh && npm run start

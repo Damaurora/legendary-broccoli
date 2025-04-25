@@ -101,14 +101,14 @@
 4. Настройте сервис:
    - **Name**: damask-shop (или выберите своё имя)
    - **Environment**: Node
-   - **Build Command**: `npm run db:push && node render-build.cjs`
+   - **Build Command**: `chmod +x render-build.sh && ./render-build.sh`
    - **Start Command**: `npm run start`
    - **Plan**: Free
 
    > **Важно**: 
-   > 1. Используем специальный скрипт `render-build.cjs` для преодоления проблем с зависимостями
+   > 1. Используем специальный bash-скрипт `render-build.sh` для преодоления проблем с зависимостями
    > 2. В разделе "Advanced Options" включите опцию "Include Development Dependencies"
-   > 3. Файл имеет расширение .cjs для совместимости с ES модулями
+   > 3. Скрипт явно устанавливает все необходимые dev-зависимости и запускает сборку в нужном порядке
 
 5. Нажмите "Create Web Service"
 
@@ -136,9 +136,9 @@
 Если у вас возникают проблемы при деплое на Render, проверьте следующее:
 
 1. **Ошибка "Cannot find package '@vitejs/plugin-react'":**
-   - Убедитесь, что используете команду сборки `node render-build.cjs && npm run db:push` 
-   - Скрипт `render-build.cjs` специально разработан для обхода проблем с зависимостями на Render
-   - Если проблема остается, попробуйте в настройках Render на вкладке "Advanced" включить опцию "Include devDependencies"
+   - Убедитесь, что используете команду сборки `chmod +x render-build.sh && ./render-build.sh` 
+   - Скрипт `render-build.sh` явно устанавливает все необходимые dev-зависимости
+   - В настройках Render на вкладке "Advanced" включите опцию "Include Development Dependencies"
 
 2. **Ошибка "DATABASE_URL must be set":**
    - Проверьте, что вы создали базу данных PostgreSQL в Render
