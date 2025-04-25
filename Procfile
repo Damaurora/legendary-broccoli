@@ -1,1 +1,1 @@
-web: npm run start
+web: bash scripts/deploy-setup.sh && npm run build && npm run start
