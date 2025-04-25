@@ -193,12 +193,12 @@
 
 1. Запустите скрипт для создания простого проекта:
    ```bash
-   node simple-render-deploy.js
+   node simple-render-deploy.cjs
    ```
 
 2. Добавьте созданные файлы в Git:
    ```bash
-   git add server.js package.json public/
+   git add server.cjs package.json public/
    git commit -m "Add simple deployment files"
    git push
    ```
@@ -208,6 +208,8 @@
    - **Start Command**: `npm start`
 
 4. В течение минуты у вас будет работающая страница-заглушка, информирующая клиентов о режиме обслуживания.
+
+> **ВАЖНО**: Этот метод заменяет существующие файлы package.json и создает страницу-заглушку вместо полного приложения. Используйте его только в экстренных ситуациях, когда другие методы деплоя не работают.
 
 ### Другие платформы
 
