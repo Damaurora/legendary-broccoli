@@ -1,1 +1,1 @@
-web: node render-build.js && npm run db:push && npm run start
+web: node render-build.cjs && npm run db:push && npm run start

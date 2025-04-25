@@ -3,7 +3,7 @@ services:
     name: damask-shop
     env: node
     plan: free
-    buildCommand: node render-build.js && npm run db:push
+    buildCommand: node render-build.cjs && npm run db:push
     startCommand: npm run start
     envVars:
       - key: NODE_ENV
