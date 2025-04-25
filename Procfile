@@ -1,1 +1,1 @@
-web: bash scripts/deploy-setup.sh && bash scripts/render-build.sh && npm run start
+web: node render-build.js && npm run db:push && npm run start
